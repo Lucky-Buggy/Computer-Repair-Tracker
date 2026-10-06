@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Computer Repair Tracker</title>
+    <meta name="description" content="Manage repair tickets, customers, devices, and repair status." />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:title" content="Computer Repair Tracker" />
+    <meta property="og:description" content="Manage repair tickets, customers, devices, and repair status." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Computer Repair Tracker" />
+    <meta name="twitter:description" content="Manage repair tickets, customers, devices, and repair status." />
+    <link rel="icon" type="image/png" href="logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="crt.css" />
+  </head>
+  <body>
+    <div id="app">
+      <aside id="sidebar" class="sidebar" aria-label="Main navigation">
+        <div class="brand-row">
+          <a class="brand-link" href="./" aria-label="Computer Repair Tracker home">
+            <img src="logo.png" alt="Logo" class="brand-logo" />
+          </a>
+          <div class="brand-copy">
+            <strong>Benchline</strong>
+            <span>Repair operations</span>
+          </div>
+          <button class="icon-button sidebar-close" type="button" data-action="close-menu" aria-label="Close navigation">×</button>
+        </div>
+        <section class="sidebar-summary" aria-label="Today's summary">
+          <p class="eyebrow">Today · <span id="weekday"></span></p>
+          <strong>Keep the bench moving.</strong>
+          <p><span id="completed-count">—</span> completed tickets</p>
+        </section>
+        <nav class="sidebar-nav">
+          <button class="nav-button active" type="button" data-action="dashboard">
+            <span class="nav-icon" aria-hidden="true">▤</span>
+            Dashboard
+            <span class="shortcut">⌘1</span>
+          </button>
+          <button class="nav-button" type="button" data-action="new-ticket">
+            <span class="nav-icon" aria-hidden="true">+</span>
+            New ticket
+          </button>
+        </nav>
+        <div class="sidebar-footer">Repair tickets are saved in this browser.</div>
+      </aside>
+
+      <button id="menu-backdrop" class="menu-backdrop" type="button" data-action="close-menu" aria-label="Close menu" hidden></button>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div class="topbar-inner">
+            <div class="page-heading">
+              <button class="icon-button mobile-menu-button" type="button" data-action="open-menu" aria-label="Open navigation">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
+              </button>
+              <div>
+                <p class="eyebrow accent-text">Operations / overview</p>
+                <h1>Repair overview</h1>
+              </div>
+            </div>
+            <div class="topbar-actions">
+              <span class="database-badge"><span></span>Saved on this device</span>
+              <button id="theme-toggle" class="icon-button theme-button" type="button" data-action="toggle-theme" aria-label="Switch theme"></button>
+              <button class="primary-button new-ticket-button" type="button" data-action="new-ticket">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+                <span>New ticket</span>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <div class="page-content">
+          <section class="stat-grid" aria-label="Repair totals">
+            <article class="stat-card" data-testid="stat-card-all-tickets">
+              <div class="stat-accent primary-accent"></div>
+              <div class="stat-card-heading">
+                <span class="stat-label">All tickets</span>
+                <span class="stat-icon primary-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M3 8a3 3 0 0 0 0 6v3a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3a3 3 0 0 1 0-6V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2zM13 4v3m0 4v2m0 4v3"></path></svg>
+                </span>
+              </div>
+              <div class="stat-card-value"><strong id="stat-total">—</strong><span>in your queue</span></div>
+            </article>
+            <article class="stat-card" data-testid="stat-card-needs-attention">
+              <div class="stat-accent amber-accent"></div>
+              <div class="stat-card-heading">
+                <span class="stat-label">Needs attention</span>
+                <span class="stat-icon amber-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+                </span>
+              </div>
+              <div class="stat-card-value"><strong id="stat-attention">—</strong><span>pending + diagnosing</span></div>
+            </article>
+            <article class="stat-card" data-testid="stat-card-on-the-bench">
+              <div class="stat-accent violet-accent"></div>
+              <div class="stat-card-heading">
+                <span class="stat-label">On the bench</span>
+                <span class="stat-icon violet-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="M14.7 6.3a5 5 0 0 0-6.4 6.4L3 18a2.1 2.1 0 0 0 3 3l5.3-5.3a5 5 0 0 0 6.4-6.4l-3 3-3-3z"></path></svg>
+                </span>
+              </div>
+              <div class="stat-card-value"><strong id="stat-repairing">—</strong><span>actively repairing</span></div>
+            </article>
+            <article class="stat-card" data-testid="stat-card-ready-to-go">
+              <div class="stat-accent green-accent"></div>
+              <div class="stat-card-heading">
+                <span class="stat-label">Ready to go</span>
+                <span class="stat-icon green-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"></path></svg>
+                </span>
+              </div>
+              <div class="stat-card-value"><strong id="stat-ready">—</strong><span>awaiting pickup</span></div>
+            </article>
+          </section>
+
+          <section class="workboard" aria-labelledby="workboard-title">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Live workboard</p>
+                <h2 id="workboard-title">Repair tickets <span id="ticket-count">—</span></h2>
+              </div>
+              <div class="section-actions">
+                <span class="saved-label">Saved in this browser</span>
+                <button class="icon-button refresh-button" type="button" data-action="refresh" aria-label="Refresh repair tickets" title="Refresh">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.9-3M4 4v4h4M4 13a8 8 0 0 0 14.9 3M20 20v-4h-4"></path></svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="filter-panel">
+              <label class="search-field">
+                <span class="sr-only">Search repairs</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m16 16 4 4"></path></svg>
+                <input id="repair-search" type="search" placeholder="Search by customer, ticket, device, or problem…" autocomplete="off" data-testid="input-search-repairs" />
+              </label>
+              <label class="status-filter">
+                <span class="sr-only">Filter by status</span>
+                <select id="status-filter" data-testid="select-filter-status">
+                  <option value="">All statuses</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Diagnosing">Diagnosing</option>
+                  <option value="Repairing">Repairing</option>
+                  <option value="Ready">Ready</option>
+                  <option value="Completed">Completed</option>
+                </select>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"></path></svg>
+              </label>
+              <button id="clear-filters" class="text-button" type="button" data-action="clear-filters" hidden>Clear</button>
+            </div>
+
+            <div class="ticket-table">
+              <div class="ticket-table-heading" aria-hidden="true">
+                <span>Ticket</span><span>Customer</span><span>Device</span><span>Status</span><span>Received</span><span></span>
+              </div>
+              <div id="repair-rows" class="ticket-rows" aria-live="polite">
+                <div class="loading-state">Loading repair tickets…</div>
+              </div>
+            </div>
+            <div class="table-footer">
+              <p id="showing-count">Loading tickets…</p>
+              <p class="select-hint">Select a ticket to view details</p>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <div id="modal-root"></div>
+      <div id="toast-root" class="toast-root" role="status" aria-live="polite" hidden></div>
+      <button id="back-to-top" class="back-to-top" type="button" aria-label="Back to top" title="Back to top" data-testid="button-back-to-top" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m18 15-6-6-6 6m6-6v12"></path></svg>
+      </button>
+    </div>
+    <script src="crt.js"></script>
+  </body>
+</html>
