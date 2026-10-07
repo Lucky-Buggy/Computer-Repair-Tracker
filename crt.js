@@ -1,9 +1,4 @@
-// =====================================================================
-// Data layer: replaces the old server + database.
-// Tickets are saved in the browser with localStorage, so Create / Read /
-// Update / Delete all work on GitHub Pages with no backend.
-// (Data stays on the device and browser that created it.)
-// =====================================================================
+
 const REPAIRS_KEY = "computer-repair-tracker-repairs";
 const NEXT_ID_KEY = "computer-repair-tracker-next-id";
 const TICKET_NUMBER_OFFSET = 1000;
